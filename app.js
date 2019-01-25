@@ -111,5 +111,3 @@ const memoryGame = (() => {
   };
   button.addEventListener("click", reload);
 })();
-
-document.addEventListener("load", memoryGame);
