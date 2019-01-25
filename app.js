@@ -1,85 +1,94 @@
-const container = document.querySelectorAll('.container')[0]
-const cards = []
+"use strict";
+const container = document.getElementById("container");
+
 let listOfColor = [
-  'white',
-  'red',
-  'yellow',
-  'pink',
-  'green',
-  'orange',
-  'white',
-  'red',
-  'yellow',
-  'pink',
-  'green',
-  'orange'
-]
+  "white",
+  "purple",
+  "blue",
+  "brown",
+  "green",
+  "orange",
+  "white",
+  "green",
+  "orange",
+  "purple",
+  "brown",
+  "blue"
+];
 
-for (let i = 0; i < 12; i++) {
-  let random = Math.floor(Math.random() * listOfColor.length)
-  cards[i] = document.createElement('div')
+/*Randomizing the list at first then creating the cards,
+to make sure every every card has a pair.
+ */
+listOfColor.sort(() => 0.5 - Math.random());
 
-  cards[i].className = 'memory-card'
+listOfColor.forEach(color => {
+  const cardWrapper = document.createElement("div");
+  const frontCard = document.createElement("div");
+  const backCard = document.createElement("div");
 
-  const frontCard = document.createElement('div')
-  frontCard.className = 'front-card gray'
-  const backCard = document.createElement('div')
-  backCard.className = `back-card ${listOfColor[random]}`
-  cards[i].appendChild(backCard)
-  cards[i].appendChild(frontCard)
-  listOfColor.splice(random, 1)
-  container.appendChild(cards[i])
+  cardWrapper.className = "memory-card";
+  frontCard.className = `front-card ${color}`;
+  backCard.className = "back-card gray";
+  frontCard.style.backgroundColor = `${color}`;
+
+  cardWrapper.dataset.name = color;
+
+  cardWrapper.appendChild(backCard);
+  cardWrapper.appendChild(frontCard);
+  container.appendChild(cardWrapper);
+});
+
+let firstClick = false;
+let firstCard, secondCard;
+let wait = false;
+let timer = 0;
+let timerP = document.getElementById("timer");
+const cards = document.querySelectorAll(".memory-card");
+
+cards.forEach(card => card.addEventListener("click", toggleRotateClass));
+
+function toggleRotateClass() {
+  if (wait) return;
+  if (this === firstCard) return;
+
+  this.classList.toggle("rotate");
+
+  if (!firstClick) {
+    firstClick = true;
+    firstCard = this;
+  } else {
+    firstClick = false;
+    secondCard = this;
+    checkForMatchingCards();
+  }
 }
-var timer=0;
-var firstClick=false;
-var checkClick = 'fozy';
-var prevTarget;
-var currentTarget;
-var rightChecked = 0;
-var clickCounter = 0;
-var timerP= document.getElementById('timer');
-timerP.innerHTML="your time is "+timer;
-var start;
 
- document.getElementsByClassName('container')[0].addEventListener ('click', function (e) {
-    
-    if(!firstClick){
-      firstClick=true;
-       start = setInterval(( ) => {
-        timer++
-        timerP.innerHTML="your time is "+timer;
-      }, 1000); 
-      
-    }
+setInterval(function start() {
+  timer++;
+  return (timerP.innerHTML = "your time is " + timer);
+}, 1000);
 
-    clickCounter++
-    let counter = document.getElementById('clicks');
-    counter.innerText = 'you clicked ' + clickCounter + ' times'
-    console.log(typeof(e.target.innerHTML));
+function checkForMatchingCards() {
+  if (firstCard.dataset.name === secondCard.dataset.name) {
+    removeClickEvent() && removeToggleClass();
+    ++correctAnswerCounter;
+    console.log(correctAnswerCounter);
+    return;
+  }
+  return removeToggleClass();
+}
 
-    if (e.target.className === 'memory-card') {
-      e.target.classList.add('clicked')
-    }
-    if (checkClick === 'fozy') {
-      checkClick = e.target.innerHTML
-      prevTarget = e.target
-    } else if (checkClick !== e.target.innerHTML) {
-      // timer removes class clicked and sets sameer to fozy
-      currentTarget = e.target
-      setTimeout(function () {
-        prevTarget.classList.remove('clicked')
-        currentTarget.classList.remove('clicked')
+//if cards are matching, turning cards into non-clickable objects
+function removeClickEvent() {
+  firstCard.removeEventListener("click", toggleRotateClass);
+  secondCard.removeEventListener("click", toggleRotateClass);
+}
 
-        checkClick = 'fozy'
-      }, 500)
-    } else {
-      rightChecked++
-      if (rightChecked === cards.length / 2) {
-        let winDiv = document.getElementById('winner')
-        winDiv.innerText = 'you win it';
-        clearInterval(start);
-      }
-      checkClick = 'fozy'
-    }
-  },false)
-
+function removeToggleClass() {
+  wait = true;
+  setTimeout(() => {
+    firstCard.classList.remove("rotate");
+    secondCard.classList.remove("rotate");
+    wait = false;
+  }, 1000);
+}
