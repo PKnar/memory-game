@@ -17,6 +17,30 @@ h1 {
   margin-top: 10px;
 }
 
+#winnerDiv {
+  padding: 20px;
+  margin: 20px auto;
+  text-transform: uppercase;
+  display: none;
+}
+
+#winnerDiv button {
+  width: 100px;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  align-self: center;
+  text-transform: uppercase;
+  background-color: white;
+  border: none;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+}
+
+button:hover {
+  transform: scale(1.02);
+}
+
 #container {
   width: 500px;
   height: 500px;
@@ -61,6 +85,10 @@ p {
   color: black;
 }
 
+button:focus {
+  outline: none;
+}
+
 /* #timer{
   background-color:white;
   color:black;
@@ -81,12 +109,5 @@ p {
 
 .counterDiv {
   padding: 20px;
-  border-radius: 5px;
   width: 100%;
-  background-color: balck;
-  color: white;
-}
-.counterDiv > p {
-  pointer-events: none;
-  text-align: center;
 }
